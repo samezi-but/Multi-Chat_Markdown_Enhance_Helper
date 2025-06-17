@@ -24,6 +24,7 @@
   // Constants
   const SKIP_ELEMENTS = "pre, code, kbd, samp, textarea, script, style";
   const PROCESSED_MARK = 'data-markdown-fixer-processed';
+  const ORIGINAL_CONTENT_ATTR = 'data-original-content';
 
   // Enhanced regex patterns
   const RX_BOLD = /\*\*([\s\S]+?)\*\*/g;
@@ -133,6 +134,10 @@
 
     // Apply changes if any were made
     if (hasChanges) {
+      // Store original content before replacement
+      if (!parent.hasAttribute(ORIGINAL_CONTENT_ATTR)) {
+        parent.setAttribute(ORIGINAL_CONTENT_ATTR, parent.innerHTML);
+      }
       parent.replaceChild(fragment, node);
       parent.setAttribute(PROCESSED_MARK, 'true');
     }
@@ -153,6 +158,10 @@
     const convertedHTML = htmlConvert(originalHTML);
     
     if (convertedHTML !== originalHTML) {
+      // Store original content before conversion
+      if (!el.hasAttribute(ORIGINAL_CONTENT_ATTR)) {
+        el.setAttribute(ORIGINAL_CONTENT_ATTR, originalHTML);
+      }
       el.innerHTML = convertedHTML;
       el.setAttribute(PROCESSED_MARK, 'true');
     }
@@ -184,6 +193,19 @@
     // Second pass: element-level for cross-boundary cases
     const elements = root.querySelectorAll("*");
     elements.forEach(patchElement);
+  };
+
+  // Restore original content for all processed elements
+  const restoreOriginalContent = () => {
+    const processedElements = document.querySelectorAll(`[${PROCESSED_MARK}]`);
+    processedElements.forEach(el => {
+      const originalContent = el.getAttribute(ORIGINAL_CONTENT_ATTR);
+      if (originalContent) {
+        el.innerHTML = originalContent;
+        el.removeAttribute(PROCESSED_MARK);
+        el.removeAttribute(ORIGINAL_CONTENT_ATTR);
+      }
+    });
   };
 
   // Apply or remove debug styles
@@ -269,22 +291,29 @@
   // Listen for settings changes from popup
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'updateSettings') {
+      const wasEnabled = CONFIG.enabled;
       CONFIG = { ...CONFIG, ...request.settings };
       
       if (request.settings.enabled === false) {
-        // Disable functionality
+        // Disable functionality and restore original content
         if (mainObserver) mainObserver.disconnect();
         if (shadowObserver) shadowObserver.disconnect();
+        restoreOriginalContent();
         updateDebugStyles();
-      } else if (request.settings.enabled === true && !mainObserver) {
-        // Re-enable functionality
-        initialize();
+      } else if (request.settings.enabled === true) {
+        if (!wasEnabled) {
+          // Re-enable functionality from disabled state
+          initialize();
+        } else {
+          // Just update debug styles if already enabled
+          updateDebugStyles();
+        }
       } else {
         // Update debug styles
         updateDebugStyles();
       }
       
-      sendResponse({ success: true });
+      sendResponse({ success: true, restored: request.settings.enabled === false });
     }
   });
 
@@ -292,6 +321,8 @@
   window.addEventListener('beforeunload', () => {
     if (mainObserver) mainObserver.disconnect();
     if (shadowObserver) shadowObserver.disconnect();
+    // Restore original content before page unload
+    restoreOriginalContent();
   });
 
   // Start the extension
