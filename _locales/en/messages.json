@@ -1,0 +1,90 @@
+{
+  "extensionName": {
+    "message": "Enhanced Markdown Bold/Italic Fixer",
+    "description": "Name of the extension"
+  },
+  "extensionDescription": {
+    "message": "Convert **bold** and *italic* markdown to HTML tags on ChatGPT and Gemini with infinite loop prevention",
+    "description": "Description of the extension"
+  },
+  "popupTitle": {
+    "message": "Enhanced Markdown Fixer Settings",
+    "description": "Title shown in popup"
+  },
+  "markdownFixer": {
+    "message": "Markdown Fixer",
+    "description": "Main heading in popup"
+  },
+  "version": {
+    "message": "v7.0",
+    "description": "Version number"
+  },
+  "enableExtension": {
+    "message": "Enable Extension",
+    "description": "Label for enable toggle"
+  },
+  "enableExtensionDesc": {
+    "message": "Automatically convert markdown formatting",
+    "description": "Description for enable toggle"
+  },
+  "debugMode": {
+    "message": "Debug Mode",
+    "description": "Label for debug toggle"
+  },
+  "debugModeDesc": {
+    "message": "Highlight converted text with colors",
+    "description": "Description for debug toggle"
+  },
+  "supportedSites": {
+    "message": "Supported Sites",
+    "description": "Heading for supported sites section"
+  },
+  "chatgpt": {
+    "message": "ChatGPT (chatgpt.com)",
+    "description": "ChatGPT site description"
+  },
+  "gemini": {
+    "message": "Gemini (gemini.google.com)",
+    "description": "Gemini site description"
+  },
+  "usage": {
+    "message": "Usage",
+    "description": "Heading for usage section"
+  },
+  "bold": {
+    "message": "bold",
+    "description": "Bold text example"
+  },
+  "italic": {
+    "message": "italic",
+    "description": "Italic text example"
+  },
+  "statusLoading": {
+    "message": "Loading settings...",
+    "description": "Status message when loading"
+  },
+  "statusSaved": {
+    "message": "Settings saved",
+    "description": "Status message when settings are saved"
+  },
+  "statusLoaded": {
+    "message": "Settings loaded",
+    "description": "Status message when settings are loaded"
+  },
+  "statusError": {
+    "message": "Failed to save settings",
+    "description": "Error message when saving fails"
+  },
+  "statusLoadError": {
+    "message": "Failed to load settings",
+    "description": "Error message when loading fails"
+  },
+  "languageToggle": {
+    "message": "Language / 言語",
+    "description": "Language toggle button text"
+  },
+  "statusRestored": {
+    "message": "Original content restored",
+    "description": "Status message when content is restored"
+  }
+}

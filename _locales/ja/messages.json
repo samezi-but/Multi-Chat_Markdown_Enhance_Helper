@@ -1,0 +1,90 @@
+{
+  "extensionName": {
+    "message": "マークダウン太字・斜体変換ツール",
+    "description": "拡張機能の名前"
+  },
+  "extensionDescription": {
+    "message": "ChatGPTとGeminiで**太字**と*斜体*のマークダウンをHTMLタグに変換（無限ループ防止機能付き）",
+    "description": "拡張機能の説明"
+  },
+  "popupTitle": {
+    "message": "マークダウン変換ツール 設定",
+    "description": "ポップアップのタイトル"
+  },
+  "markdownFixer": {
+    "message": "マークダウン変換",
+    "description": "ポップアップのメイン見出し"
+  },
+  "version": {
+    "message": "v7.0",
+    "description": "バージョン番号"
+  },
+  "enableExtension": {
+    "message": "拡張機能を有効化",
+    "description": "有効化トグルのラベル"
+  },
+  "enableExtensionDesc": {
+    "message": "マークダウン変換を自動実行します",
+    "description": "有効化トグルの説明"
+  },
+  "debugMode": {
+    "message": "デバッグモード",
+    "description": "デバッグトグルのラベル"
+  },
+  "debugModeDesc": {
+    "message": "変換されたテキストをハイライト表示",
+    "description": "デバッグトグルの説明"
+  },
+  "supportedSites": {
+    "message": "対応サイト",
+    "description": "対応サイトセクションの見出し"
+  },
+  "chatgpt": {
+    "message": "ChatGPT (chatgpt.com)",
+    "description": "ChatGPTサイトの説明"
+  },
+  "gemini": {
+    "message": "Gemini (gemini.google.com)",
+    "description": "Geminiサイトの説明"
+  },
+  "usage": {
+    "message": "使用方法",
+    "description": "使用方法セクションの見出し"
+  },
+  "bold": {
+    "message": "太字",
+    "description": "太字のテキスト例"
+  },
+  "italic": {
+    "message": "斜体",
+    "description": "斜体のテキスト例"
+  },
+  "statusLoading": {
+    "message": "設定を読み込み中...",
+    "description": "読み込み中のステータスメッセージ"
+  },
+  "statusSaved": {
+    "message": "設定を保存しました",
+    "description": "設定保存時のステータスメッセージ"
+  },
+  "statusLoaded": {
+    "message": "設定を読み込みました",
+    "description": "設定読み込み時のステータスメッセージ"
+  },
+  "statusError": {
+    "message": "設定の保存に失敗しました",
+    "description": "保存失敗時のエラーメッセージ"
+  },
+  "statusLoadError": {
+    "message": "設定の読み込みに失敗しました",
+    "description": "読み込み失敗時のエラーメッセージ"
+  },
+  "languageToggle": {
+    "message": "Language / 言語",
+    "description": "言語切り替えボタンのテキスト"
+  },
+  "statusRestored": {
+    "message": "元のテキストに復元しました",
+    "description": "コンテンツ復元時のステータスメッセージ"
+  }
+}
