@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Markdown Fixer Settings</title>
+    <title data-i18n="popupTitle">Enhanced Markdown Fixer Settings</title>
     <link rel="stylesheet" href="popup.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📝 Markdown Fixer</h1>
-            <p class="version">v7.0</p>
+            <h1>📝 <span data-i18n="markdownFixer">Markdown Fixer</span></h1>
+            <p class="version" data-i18n="version">v1.0</p>
         </header>
         
         <main>
@@ -21,8 +21,8 @@
                         <span class="slider"></span>
                     </label>
                     <div class="setting-info">
-                        <h3>拡張機能を有効化</h3>
-                        <p>マークダウン変換を自動実行します</p>
+                        <h3 data-i18n="enableExtension">拡張機能を有効化</h3>
+                        <p data-i18n="enableExtensionDesc">マークダウン変換を自動実行します</p>
                     </div>
                 </div>
             </div>
@@ -34,31 +34,32 @@
                         <span class="slider"></span>
                     </label>
                     <div class="setting-info">
-                        <h3>デバッグモード</h3>
-                        <p>変換されたテキストをハイライト表示</p>
+                        <h3 data-i18n="debugMode">デバッグモード</h3>
+                        <p data-i18n="debugModeDesc">変換されたテキストをハイライト表示</p>
                     </div>
                 </div>
             </div>
 
             <div class="info-section">
-                <h4>対応サイト</h4>
+                <h4 data-i18n="supportedSites">対応サイト</h4>
                 <ul>
-                    <li>🤖 ChatGPT (chatgpt.com)</li>
-                    <li>💎 Gemini (gemini.google.com)</li>
+                    <li>🤖 <span data-i18n="chatgpt">ChatGPT (chatgpt.com)</span></li>
+                    <li>💎 <span data-i18n="gemini">Gemini (gemini.google.com)</span></li>
                 </ul>
             </div>
 
             <div class="usage-section">
-                <h4>使用方法</h4>
+                <h4 data-i18n="usage">使用方法</h4>
                 <div class="example">
-                    <code>**太字**</code> → <strong>太字</strong><br>
-                    <code>*斜体*</code> → <em>斜体</em>
+                    <code>**<span data-i18n="bold">太字</span>**</code> → <strong data-i18n="bold">太字</strong><br>
+                    <code>*<span data-i18n="italic">斜体</span>*</code> → <em data-i18n="italic">斜体</em>
                 </div>
             </div>
         </main>
         
         <footer>
-            <p class="status" id="status">設定を読み込み中...</p>
+            <button class="language-toggle" id="languageToggle" data-i18n="languageToggle">Language / 言語</button>
+            <p class="status" id="status" data-i18n="statusLoading">設定を読み込み中...</p>
         </footer>
     </div>
     
