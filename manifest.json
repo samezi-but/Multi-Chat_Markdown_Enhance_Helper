@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Enhanced Markdown Bold/Italic Fixer",
+  "version": "7.0",
+  "description": "Convert **bold** and *italic* markdown to HTML tags on ChatGPT and Gemini with infinite loop prevention",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://gemini.google.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Enhanced Markdown Fixer Settings"
+  }
+}

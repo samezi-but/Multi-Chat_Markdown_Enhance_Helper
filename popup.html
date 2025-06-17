@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Markdown Fixer Settings</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Markdown Fixer</h1>
+            <p class="version">v7.0</p>
+        </header>
+        
+        <main>
+            <div class="setting-group">
+                <div class="setting-item">
+                    <label class="switch">
+                        <input type="checkbox" id="enabledToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <div class="setting-info">
+                        <h3>拡張機能を有効化</h3>
+                        <p>マークダウン変換を自動実行します</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-item">
+                    <label class="switch">
+                        <input type="checkbox" id="debugToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <div class="setting-info">
+                        <h3>デバッグモード</h3>
+                        <p>変換されたテキストをハイライト表示</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h4>対応サイト</h4>
+                <ul>
+                    <li>🤖 ChatGPT (chatgpt.com)</li>
+                    <li>💎 Gemini (gemini.google.com)</li>
+                </ul>
+            </div>
+
+            <div class="usage-section">
+                <h4>使用方法</h4>
+                <div class="example">
+                    <code>**太字**</code> → <strong>太字</strong><br>
+                    <code>*斜体*</code> → <em>斜体</em>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p class="status" id="status">設定を読み込み中...</p>
+        </footer>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>
