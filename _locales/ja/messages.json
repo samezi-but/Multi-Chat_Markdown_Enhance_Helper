@@ -1,30 +1,30 @@
 {
   "extensionName": {
-    "message": "マークダウン太字・斜体変換ツール",
+    "message": "Multi-Chat Markdown Enhance Helper (for ChatGPT & Gemini)",
     "description": "拡張機能の名前"
   },
   "extensionDescription": {
-    "message": "ChatGPTとGeminiで**太字**と*斜体*のマークダウンをHTMLタグに変換（無限ループ防止機能付き）",
+    "message": "ChatGPTとGeminiが誤ってスタイルを適用できず表示された**太字**と*斜体*を正しいスタイルに修正します。",
     "description": "拡張機能の説明"
   },
   "popupTitle": {
-    "message": "マークダウン変換ツール 設定",
+    "message": "Multi-Chat Markdown Enhance Helper 設定",
     "description": "ポップアップのタイトル"
   },
   "markdownFixer": {
-    "message": "マークダウン変換",
+    "message": "Multi-Chat Markdown enhance Enhance Helper",
     "description": "ポップアップのメイン見出し"
   },
   "version": {
-    "message": "v7.0",
+    "message": "v1.0",
     "description": "バージョン番号"
   },
   "enableExtension": {
-    "message": "拡張機能を有効化",
+    "message": "自動修正の有効化",
     "description": "有効化トグルのラベル"
   },
   "enableExtensionDesc": {
-    "message": "マークダウン変換を自動実行します",
+    "message": "エラー文字列を自動的に修正します。",
     "description": "有効化トグルの説明"
   },
   "debugMode": {
@@ -48,7 +48,7 @@
     "description": "Geminiサイトの説明"
   },
   "usage": {
-    "message": "使用方法",
+    "message": "現在の対応内容",
     "description": "使用方法セクションの見出し"
   },
   "bold": {
@@ -86,5 +86,9 @@
   "statusRestored": {
     "message": "元のテキストに復元しました",
     "description": "コンテンツ復元時のステータスメッセージ"
+  },
+  "detailsInfo": {
+    "message": "詳細情報",
+    "description": "詳細情報の折りたたみセクションヘッダー"
   }
 }

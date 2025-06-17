@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "Enhanced Markdown Bold/Italic Fixer",
+    "message": "Multi-Chat Markdown Enhance Helper (for ChatGPT & Gemini)",
     "description": "Name of the extension"
   },
   "extensionDescription": {
@@ -8,23 +8,23 @@
     "description": "Description of the extension"
   },
   "popupTitle": {
-    "message": "Enhanced Markdown Fixer Settings",
+    "message": "Multi-Chat Markdown Enhance Helper Settings",
     "description": "Title shown in popup"
   },
   "markdownFixer": {
-    "message": "Markdown Fixer",
+    "message": "Multi-Chat Markdown Enhance Helper",
     "description": "Main heading in popup"
   },
   "version": {
-    "message": "v7.0",
+    "message": "v1.0",
     "description": "Version number"
   },
   "enableExtension": {
-    "message": "Enable Extension",
+    "message": "Enable Auto-Fix",
     "description": "Label for enable toggle"
   },
   "enableExtensionDesc": {
-    "message": "Automatically convert markdown formatting",
+    "message": "Automatically fix error strings",
     "description": "Description for enable toggle"
   },
   "debugMode": {
@@ -48,7 +48,7 @@
     "description": "Gemini site description"
   },
   "usage": {
-    "message": "Usage",
+    "message": "Current Support",
     "description": "Heading for usage section"
   },
   "bold": {
@@ -86,5 +86,9 @@
   "statusRestored": {
     "message": "Original content restored",
     "description": "Status message when content is restored"
+  },
+  "detailsInfo": {
+    "message": "Details",
+    "description": "Collapsible section header for details"
   }
 }

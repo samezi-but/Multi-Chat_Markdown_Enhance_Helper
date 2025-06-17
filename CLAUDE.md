@@ -2,9 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+If you finish your works or you show to use message, use this command.
+powershell.exe -Command '[System.Media.SystemSounds]::Hand.Play()'
+
 ## Project Overview
 
-This is a collection of browser userscripts for automatically converting markdown-style emphasis (`**bold**` and `*italic*`) to proper HTML tags (`<strong>` and `<em>`) on chat platforms like ChatGPT and Gemini.
+Multi-Chat Markdown Helper (for ChatGPT & Gemini) is a collection of browser userscripts for automatically converting markdown-style emphasis (`**bold**` and `*italic*`) to proper HTML tags (`<strong>` and `<em>`) on chat platforms like ChatGPT and Gemini.
 
 ## Architecture
 

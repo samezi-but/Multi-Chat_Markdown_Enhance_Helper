@@ -9,8 +9,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>📝 <span data-i18n="markdownFixer">Markdown Fixer</span></h1>
-            <p class="version" data-i18n="version">v1.0</p>
+            <h1><img src="icons/icon-128.png" alt="Icon" class="app-icon"> <span data-i18n="markdownFixer">Markdown Fixer</span> <span class="version" data-i18n="version">v1.0</span></h1>
         </header>
         
         <main>
@@ -21,8 +20,8 @@
                         <span class="slider"></span>
                     </label>
                     <div class="setting-info">
-                        <h3 data-i18n="enableExtension">拡張機能を有効化</h3>
-                        <p data-i18n="enableExtensionDesc">マークダウン変換を自動実行します</p>
+                        <h3 data-i18n="enableExtension">自動修正の有効化</h3>
+                        <p data-i18n="enableExtensionDesc">エラー文字列を自動的に修正します。</p>
                     </div>
                 </div>
             </div>
@@ -30,7 +29,7 @@
             <div class="setting-group">
                 <div class="setting-item">
                     <label class="switch">
-                        <input type="checkbox" id="debugToggle" checked>
+                        <input type="checkbox" id="debugToggle">
                         <span class="slider"></span>
                     </label>
                     <div class="setting-info">
@@ -40,19 +39,23 @@
                 </div>
             </div>
 
-            <div class="info-section">
-                <h4 data-i18n="supportedSites">対応サイト</h4>
-                <ul>
-                    <li>🤖 <span data-i18n="chatgpt">ChatGPT (chatgpt.com)</span></li>
-                    <li>💎 <span data-i18n="gemini">Gemini (gemini.google.com)</span></li>
-                </ul>
-            </div>
-
-            <div class="usage-section">
-                <h4 data-i18n="usage">使用方法</h4>
-                <div class="example">
-                    <code>**<span data-i18n="bold">太字</span>**</code> → <strong data-i18n="bold">太字</strong><br>
-                    <code>*<span data-i18n="italic">斜体</span>*</code> → <em data-i18n="italic">斜体</em>
+            <div class="collapsible-section">
+                <h4 class="collapsible-header collapsed" data-i18n="detailsInfo">詳細情報</h4>
+                <div class="collapsible-content collapsed">
+                    <div class="info-subsection">
+                        <h5 data-i18n="supportedSites">対応サイト</h5>
+                        <ul>
+                            <li> <span data-i18n="chatgpt">ChatGPT (chatgpt.com)</span></li>
+                            <li> <span data-i18n="gemini">Gemini (gemini.google.com)</span></li>
+                        </ul>
+                    </div>
+                    <div class="info-subsection">
+                        <h5 data-i18n="usage">現在の対応内容</h5>
+                        <div class="example">
+                            <code>**<span data-i18n="bold">太字</span>**</code> → <strong data-i18n="bold">太字</strong><br>
+                            <code>*<span data-i18n="italic">斜体</span>*</code> → <em data-i18n="italic">斜体</em>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

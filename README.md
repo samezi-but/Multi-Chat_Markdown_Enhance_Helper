@@ -1,4 +1,4 @@
-# Enhanced Markdown Bold/Italic Fixer - Chrome Extension
+# Multi-Chat Markdown Helper (for ChatGPT & Gemini) - Chrome Extension
 
 ChatGPTとGeminiでマークダウン記法（`**太字**`、`*斜体*`）を自動的にHTMLタグ（`<strong>`、`<em>`）に変換するChrome拡張機能です。
 
@@ -83,7 +83,7 @@ MarkdownBoldEnhancer/
 
 ## 更新履歴
 
-### v7.0 (Chrome Extension版)
+### v1.0 (Chrome Extension版)
 - ユーザースクリプトからChrome拡張機能に移植
 - 設定画面の追加
 - Chrome Storage APIによる設定永続化
