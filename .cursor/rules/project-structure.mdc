@@ -1,0 +1,16 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# MarkdownBoldEnhancer プロジェクト構成ガイド
+
+- エントリポイントは [manifest.json](mdc:manifest.json) であり、コンテンツスクリプトやポップアップ、パーミッション、アイコン、ロケールを宣言する。
+- コンテンツスクリプトは [content.js](mdc:content.js) のみで、ChatGPT / Gemini ページに挿入される。DOM を走査し、`**bold**` と `*italic*` をそれぞれ `<strong>` / `<em>` タグへ安全に変換し、ミューテーションを監視して追加ノードも処理する。ポップアップからの設定変更メッセージ `updateSettings` を受信して動的に有効 / 無効やデバッグ表示を切り替える。
+- 拡張機能の UI は [popup.html](mdc:popup.html) ・ [popup.js](mdc:popup.js) ・ [popup.css](mdc:popup.css) で構成される。`popup.js` は `chrome.storage.sync` で設定を保存／読込し、`chrome.tabs.sendMessage` でコンテンツスクリプトへ反映させる。言語トグルで UI を「en / ja」間で切替可能。
+- ローカライズ文字列は `_locales/<lang>/messages.json` に格納される。主なファイル: [en/messages.json](mdc:_locales/en/messages.json), [ja/messages.json](mdc:_locales/ja/messages.json)。`popup.js` 内のフォールバック辞書も併せて更新する必要がある。
+- アイコン類は [icons/](mdc:icons) 配下にあり、[icons/create_icons.py](mdc:icons/create_icons.py) で生成できる。`manifest.json` で 16 / 32 / 48 / 128 サイズを宣言済み。
+- 旧ユーザースクリプト版は [enhanced-markdown-fixer.js](mdc:enhanced-markdown-fixer.js) に残してあり、`content.js` とほぼ同一の変換ロジックを参考用に保持する。
+- 新しいローカライズキーを追加する際は、各 `messages.json` と `popup.js` のフォールバックマップの両方を更新すること。
+- ポップアップ → コンテンツ間の通信は `{action: 'updateSettings', settings}` メッセージによって行われる。設定が `enabled: false` の場合、コンテンツスクリプトは DOM を復元してデバッガスタイルを除去する。
+

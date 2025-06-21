@@ -1,24 +1,32 @@
-// ==UserScript==
-// @name         Enhanced Markdown Bold/Italic Fixer
-// @namespace    http://tampermonkey.net/
-// @version      7.0
-// @description  Convert **bold** and *italic* markdown to HTML tags on ChatGPT and Gemini with infinite loop prevention
-// @author       Merged Enhanced Version
-// @match        https://chatgpt.com/*
-// @match        https://gemini.google.com/*
-// @run-at       document-idle
-// @grant        none
-// ==/UserScript==
+// Enhanced Markdown Bold/Italic Fixer - Chrome Extension Content Script
+// Converted from userscript to Chrome extension
 
 (() => {
   "use strict";
 
-  // Configuration
+  // Configuration - will be loaded from storage
+  let CONFIG = {
+    debug: false,
+    enabled: true
+  };
+
+  // Load settings from Chrome storage
+  const loadSettings = async () => {
+    try {
+      const result = await chrome.storage.sync.get(['debug', 'enabled']);
+      CONFIG.debug = result.debug !== undefined ? result.debug : true;
+      CONFIG.enabled = result.enabled !== undefined ? result.enabled : true;
+    } catch (error) {
+      console.warn('[Markdown Fixer] Failed to load settings:', error);
+    }
+  };
+
+  // Constants
   const SKIP_ELEMENTS = "pre, code, kbd, samp, textarea, script, style";
   const PROCESSED_MARK = 'data-markdown-fixer-processed';
-  const DEBUG = true;
+  const ORIGINAL_CONTENT_ATTR = 'data-original-content';
 
-  // Enhanced regex patterns from chatgpt.js
+  // Enhanced regex patterns
   const RX_BOLD = /\*\*([\s\S]+?)\*\*/g;
   const RX_ITALIC = /(^|[^*])\*([^*\s][\s\S]*?)\*(?=[^*]|$)/g;
 
@@ -29,8 +37,10 @@
       .replace(RX_ITALIC, (_, p1, p2) => p1 + '<em class="em-fix-italic">' + p2 + "</em>");
   };
 
-  // Fragment-based safe text conversion (from gemini.js approach)
+  // Fragment-based safe text conversion
   const convertTextNodeSafely = (node) => {
+    if (!CONFIG.enabled) return;
+    
     if (!node.parentElement || 
         node.parentElement.closest(SKIP_ELEMENTS) ||
         node.parentElement.hasAttribute(PROCESSED_MARK)) {
@@ -124,6 +134,10 @@
 
     // Apply changes if any were made
     if (hasChanges) {
+      // Store original content before replacement
+      if (!parent.hasAttribute(ORIGINAL_CONTENT_ATTR)) {
+        parent.setAttribute(ORIGINAL_CONTENT_ATTR, parent.innerHTML);
+      }
       parent.replaceChild(fragment, node);
       parent.setAttribute(PROCESSED_MARK, 'true');
     }
@@ -131,6 +145,8 @@
 
   // Element-level conversion for cross-boundary cases
   const patchElement = (el) => {
+    if (!CONFIG.enabled) return;
+    
     if (el.closest(SKIP_ELEMENTS) || 
         !el.textContent.includes("*") || 
         el.querySelector(SKIP_ELEMENTS) ||
@@ -142,6 +158,10 @@
     const convertedHTML = htmlConvert(originalHTML);
     
     if (convertedHTML !== originalHTML) {
+      // Store original content before conversion
+      if (!el.hasAttribute(ORIGINAL_CONTENT_ATTR)) {
+        el.setAttribute(ORIGINAL_CONTENT_ATTR, originalHTML);
+      }
       el.innerHTML = convertedHTML;
       el.setAttribute(PROCESSED_MARK, 'true');
     }
@@ -149,6 +169,8 @@
 
   // Enhanced tree walker with both approaches
   const processNode = (root) => {
+    if (!CONFIG.enabled) return;
+    
     // First pass: individual text nodes (safer)
     const textWalker = document.createTreeWalker(
       root, 
@@ -173,14 +195,53 @@
     elements.forEach(patchElement);
   };
 
-  // Initial processing
-  if (document.body) {
-    processNode(document.body);
-  }
+  // Restore original content for all processed elements
+  const restoreOriginalContent = () => {
+    const processedElements = document.querySelectorAll(`[${PROCESSED_MARK}]`);
+    processedElements.forEach(el => {
+      const originalContent = el.getAttribute(ORIGINAL_CONTENT_ATTR);
+      if (originalContent) {
+        el.innerHTML = originalContent;
+        el.removeAttribute(PROCESSED_MARK);
+        el.removeAttribute(ORIGINAL_CONTENT_ATTR);
+      }
+    });
+  };
+
+  // Apply or remove debug styles
+  const updateDebugStyles = () => {
+    const existingStyle = document.getElementById('markdown-fixer-debug-style');
+    
+    if (CONFIG.debug && CONFIG.enabled) {
+      if (!existingStyle) {
+        const style = document.createElement("style");
+        style.id = 'markdown-fixer-debug-style';
+        style.textContent = `
+          strong.em-fix-bold { 
+            background: rgba(255,255,0,0.25); 
+            font-weight: 700; 
+            border-radius: 2px;
+            padding: 1px 2px;
+          }
+          em.em-fix-italic { 
+            background: rgba(0,255,255,0.25); 
+            font-style: italic; 
+            border-radius: 2px;
+            padding: 1px 2px;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    } else if (existingStyle) {
+      existingStyle.remove();
+    }
+  };
 
   // Enhanced mutation observer with Shadow DOM support
   const createObserver = (targetNode) => {
     return new MutationObserver(mutations => {
+      if (!CONFIG.enabled) return;
+      
       mutations.forEach(mutation => {
         mutation.addedNodes.forEach(addedNode => {
           if (addedNode.nodeType === Node.TEXT_NODE) {
@@ -193,46 +254,78 @@
     });
   };
 
-  // Observe main document
-  const mainObserver = createObserver(document);
-  mainObserver.observe(document.body || document.documentElement, {
-    childList: true,
-    subtree: true
-  });
+  let mainObserver = null;
+  let shadowObserver = null;
 
-  // Shadow DOM support for Gemini
-  if (document.documentElement.shadowRoot) {
-    const shadowObserver = createObserver(document.documentElement.shadowRoot);
-    shadowObserver.observe(document.documentElement.shadowRoot, {
+  // Initialize the extension
+  const initialize = async () => {
+    await loadSettings();
+    
+    if (!CONFIG.enabled) return;
+    
+    // Initial processing
+    if (document.body) {
+      processNode(document.body);
+    }
+
+    // Apply debug styles
+    updateDebugStyles();
+
+    // Observe main document
+    mainObserver = createObserver(document);
+    mainObserver.observe(document.body || document.documentElement, {
       childList: true,
       subtree: true
     });
-  }
 
-  // Debug styling
-  if (DEBUG) {
-    const style = document.createElement("style");
-    style.textContent = `
-      strong.em-fix-bold { 
-        background: rgba(255,255,0,0.25); 
-        font-weight: 700; 
-        border-radius: 2px;
-        padding: 1px 2px;
+    // Shadow DOM support for Gemini
+    if (document.documentElement.shadowRoot) {
+      shadowObserver = createObserver(document.documentElement.shadowRoot);
+      shadowObserver.observe(document.documentElement.shadowRoot, {
+        childList: true,
+        subtree: true
+      });
+    }
+  };
+
+  // Listen for settings changes from popup
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'updateSettings') {
+      const wasEnabled = CONFIG.enabled;
+      CONFIG = { ...CONFIG, ...request.settings };
+      
+      if (request.settings.enabled === false) {
+        // Disable functionality and restore original content
+        if (mainObserver) mainObserver.disconnect();
+        if (shadowObserver) shadowObserver.disconnect();
+        restoreOriginalContent();
+        updateDebugStyles();
+      } else if (request.settings.enabled === true) {
+        if (!wasEnabled) {
+          // Re-enable functionality from disabled state
+          initialize();
+        } else {
+          // Just update debug styles if already enabled
+          updateDebugStyles();
+        }
+      } else {
+        // Update debug styles
+        updateDebugStyles();
       }
-      em.em-fix-italic { 
-        background: rgba(0,255,255,0.25); 
-        font-style: italic; 
-        border-radius: 2px;
-        padding: 1px 2px;
-      }
-    `;
-    document.head.appendChild(style);
-  }
+      
+      sendResponse({ success: true, restored: request.settings.enabled === false });
+    }
+  });
 
   // Cleanup function for potential memory leaks
   window.addEventListener('beforeunload', () => {
     if (mainObserver) mainObserver.disconnect();
     if (shadowObserver) shadowObserver.disconnect();
+    // Restore original content before page unload
+    restoreOriginalContent();
   });
+
+  // Start the extension
+  initialize();
 
 })();

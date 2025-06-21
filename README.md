@@ -1,93 +1,106 @@
-# Multi-Chat Markdown Helper (for ChatGPT & Gemini) - Chrome Extension
+# Multi-Chat Markdown Enhance Helper (for ChatGPT & Gemini)
 
-ChatGPTとGeminiでマークダウン記法（`**太字**`、`*斜体*`）を自動的にHTMLタグ（`<strong>`、`<em>`）に変換するChrome拡張機能です。
+> [English Version](README-en.md)
+
+ChatGPT と Gemini でマークダウン記法（`**太字**`、`*斜体*`）を自動的に正しい HTML タグに変換するブラウザ拡張機能です。
 
 ## 機能
 
-- **自動変換**: `**太字**` → `<strong>太字</strong>`、`*斜体*` → `<em>斜体</em>`
-- **リアルタイム処理**: 入力と同時に自動変換
-- **無限ループ防止**: 重複処理を防ぐ高度な制御機能
-- **設定可能**: ポップアップから機能のON/OFF、デバッグモードの切り替え
-- **対応サイト**: ChatGPT (chatgpt.com)、Gemini (gemini.google.com)
+- **自動変換**: `**太字**` → **太字**、`*斜体*` → *斜体*
+- **リアルタイム処理**: 入力や表示と同時に自動変換
+- **対応サイト**: ChatGPT (chatgpt.com) と Gemini (gemini.google.com)
+- **デバッグモード**: 変換されたテキストをハイライト表示
+- **多言語対応**: 日本語・英語インターフェース
 
-## インストール方法
+## インストール
 
-### 1. 開発者モードでのインストール
+### Chrome Web Store（推奨）
+1. Chrome Web Store から拡張機能をインストール
+2. ChatGPT または Gemini にアクセス
+3. 自動的に変換が開始されます
 
-1. **拡張機能フォルダの準備**
-   - このプロジェクトフォルダ全体をダウンロード
-   - `enhanced-markdown-fixer.js`（ユーザースクリプト版）は不要
+### 手動インストール
+1. このリポジトリをダウンロードまたはクローン
+2. Chrome の拡張機能ページ（`chrome://extensions/`）を開く
+3. 「デベロッパーモード」を有効にする
+4. 「パッケージ化されていない拡張機能を読み込む」をクリック
+5. ダウンロードしたフォルダを選択
 
-2. **Chromeで拡張機能を有効化**
-   - Chrome で `chrome://extensions/` を開く
-   - 右上の「デベロッパーモード」を有効にする
-   - 「パッケージ化されていない拡張機能を読み込む」をクリック
-   - このプロジェクトのフォルダを選択
+## 使い方
 
-3. **動作確認**
-   - ChatGPT または Gemini にアクセス
-   - `**テスト**` や `*テスト*` と入力して変換を確認
+1. **基本使用**: 拡張機能をインストール後、ChatGPT または Gemini でマークダウン記法を使用すると自動変換されます
 
-### 2. 設定
+2. **設定変更**: 
+   - 拡張機能アイコンをクリックして設定パネルを開く
+   - 自動修正の有効/無効を切り替え
+   - デバッグモードの有効/無効を切り替え
 
-- 拡張機能アイコンをクリックしてポップアップを開く
-- 「拡張機能を有効化」で機能のON/OFF
-- 「デバッグモード」で変換されたテキストのハイライト表示
+3. **対応する記法**:
+   - `**太字テキスト**` → **太字テキスト**
+   - `*斜体テキスト*` → *斜体テキスト*
 
-## ファイル構成
+## 技術仕様
 
+### アーキテクチャ
+- **Manifest V3** 対応のブラウザ拡張機能
+- **Content Scripts** による DOM 操作
+- **MutationObserver** でリアルタイム監視
+- **TreeWalker** による効率的な DOM 探索
+
+### 主要ファイル
+- `content.js`: メインの変換ロジック
+- `popup.html/js`: 設定パネル UI
+- `manifest.json`: 拡張機能の設定
+- `_locales/`: 多言語対応ファイル
+
+### 変換ロジック
+- **太字**: `/\*\*([\s\S]+?)\*\*/g` → `<strong>$1</strong>`
+- **斜体**: `/(^|[^*])\*([^*\s][\s\S]*?)\*(?=[^*]|$)/g` → `$1<em>$2</em>`
+
+## 開発
+
+### 前提条件
+- Node.js（アイコン生成用）
+- Python 3.x（アイコン生成用）
+
+### セットアップ
+```bash
+git clone https://github.com/samezi-but/Multi-Chat_Markdown_Enhance_Helper.git
+cd Multi-Chat_Markdown_Enhance_Helper
 ```
-MarkdownBoldEnhancer/
-├── manifest.json          # Chrome拡張機能の設定ファイル
-├── content.js            # メインの変換ロジック
-├── popup.html            # 設定画面のHTML
-├── popup.css             # 設定画面のスタイル
-├── popup.js              # 設定画面のロジック
-└── README.md             # このファイル
+
+### アイコン生成
+```bash
+cd icons
+python create_icons.py
 ```
 
-## 技術詳細
+### テスト
+1. 拡張機能を Chrome にロード
+2. ChatGPT または Gemini にアクセス
+3. マークダウン記法を入力してテスト
+4. デバッグモードで変換結果を確認
 
-### 変換処理
+## 貢献
 
-- **二段階処理**: テキストノード単位の安全な変換 → 要素レベルの境界越え変換
-- **正規表現**:
-  - 太字: `/\*\*([\s\S]+?)\*\*/g`
-  - 斜体: `/(^|[^*])\*([^*\s][\s\S]*?)\*(?=[^*]|$)/g`
-- **DOM操作**: DocumentFragmentベースの安全な置換
-
-### 除外要素
-
-以下の要素内では変換を実行しません：
-- `pre, code, kbd, samp, textarea, script, style`
-
-### 設定保存
-
-- Chrome Storage API を使用して設定を永続化
-- `enabled`: 機能の有効/無効
-- `debug`: デバッグモードの有効/無効
-
-## トラブルシューティング
-
-### 変換されない場合
-
-1. 拡張機能が有効になっているか確認
-2. ポップアップで「拡張機能を有効化」がONになっているか確認
-3. ページをリロードしてみる
-
-### デバッグ
-
-1. ポップアップで「デバッグモード」を有効にする
-2. 変換されたテキストが黄色（太字）/水色（斜体）でハイライトされる
-3. ブラウザの開発者ツールでコンソールエラーを確認
-
-## 更新履歴
-
-### v1.0 (Chrome Extension版)
-- ユーザースクリプトからChrome拡張機能に移植
-- 設定画面の追加
-- Chrome Storage APIによる設定永続化
+1. このリポジトリをフォーク
+2. 機能ブランチを作成（`git checkout -b feature/AmazingFeature`）
+3. 変更をコミット（`git commit -m 'Add some AmazingFeature'`）
+4. ブランチにプッシュ（`git push origin feature/AmazingFeature`）
+5. プルリクエストを作成
 
 ## ライセンス
 
-このプロジェクトはオープンソース（MIT License）です。
+このプロジェクトは MIT ライセンスの下で公開されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
+
+## 更新履歴
+
+### v1.0.1
+- 多言語対応（日本語・英語）
+- UI の改善  
+- 安定性の向上
+
+### v1.0.0
+- 初回リリース
+- ChatGPT と Gemini 対応
+- 基本的なマークダウン変換機能

@@ -6,7 +6,7 @@
 
   // Configuration - will be loaded from storage
   let CONFIG = {
-    debug: true,
+    debug: false,
     enabled: true
   };
 

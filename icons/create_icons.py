@@ -5,6 +5,7 @@ Creates 16x16, 32x32, 48x48, and 128x128 PNG icons from SVG.
 """
 
 import os
+import base64
 from pathlib import Path
 
 # SVG icon template
@@ -35,6 +36,24 @@ def create_svg_icon(size):
     """Create SVG icon of specified size"""
     return svg_template.format(size=size)
 
+def create_simple_png_from_existing():
+    """Create simple PNG files by copying the existing 128.png for all sizes"""
+    sizes = [16, 32, 48]
+    
+    # Read the existing 128.png file
+    if os.path.exists("icon-128.png"):
+        with open("icon-128.png", "rb") as f:
+            png_data = f.read()
+        
+        # Copy to other sizes (browser will resize as needed)
+        for size in sizes:
+            filename = f"icon-{size}.png"
+            with open(filename, "wb") as f:
+                f.write(png_data)
+            print(f"Created {filename}")
+    else:
+        print("icon-128.png not found!")
+
 def main():
     # Icon sizes needed for Chrome extension
     sizes = [16, 32, 48, 128]
@@ -48,9 +67,11 @@ def main():
         
         print(f"Created {filename}")
     
-    print("\nSVG icons created successfully!")
-    print("To convert to PNG, use a tool like Inkscape or an online converter:")
-    print("  inkscape --export-type=png --export-filename=icon-16.png icon-16.svg")
+    # Create PNG files by copying the existing 128.png
+    print("\nCreating PNG files...")
+    create_simple_png_from_existing()
+    
+    print("\nAll icons created successfully!")
 
 if __name__ == "__main__":
     main()
