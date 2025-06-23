@@ -1,8 +1,10 @@
 # Multi-Chat Markdown Enhance Helper (for ChatGPT & Gemini)
 
-> [English Version](README-en.md)
+[English Version](README-en.md)
 
 ChatGPT と Gemini でマークダウン記法（`**太字**`、`*斜体*`）を自動的に正しい HTML タグに変換するブラウザ拡張機能です。
+
+[ストア](https://chromewebstore.google.com/detail/multi-chat-markdown-enhan/ejjikbphldcdeoheggnbkbnenoplijip)でリリースしました。
 
 ## 機能
 
