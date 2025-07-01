@@ -58,6 +58,156 @@ main {
     margin-bottom: 22px;
 }
 
+/* Debug section with container styling */
+.debug-section {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 0;
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.debug-section:hover {
+    border-color: #d0d7de;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+.debug-main-toggle {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid #e9ecef;
+}
+
+.debug-main-toggle .setting-item {
+    margin: 0;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* Debug options container with smooth transitions */
+.debug-options-container {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.3s ease, padding 0.3s ease;
+    padding: 0;
+    background: rgba(102, 126, 234, 0.05);
+    position: relative;
+    display: none; /* Hidden by default */
+}
+
+/* When debug mode is enabled */
+.debug-options-container.debug-enabled {
+    display: block;
+    opacity: 1;
+    max-height: 400px;
+    padding: 16px;
+}
+
+/* Smooth loading state - no transition on initial load */
+.debug-options-container.initial-load {
+    transition: none;
+}
+
+.debug-options-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.debug-options-container.debug-enabled::before {
+    opacity: 1;
+}
+
+.debug-options-header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #d0d7de;
+}
+
+.debug-options-header h4 {
+    font-size: 12px;
+    font-weight: 600;
+    color: #667eea;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Debug option items with nested styling */
+.debug-option-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.debug-option-item:last-child {
+    margin-bottom: 0;
+}
+
+.debug-option-item::before {
+    content: '⚙';
+    position: absolute;
+    left: -4px;
+    top: -4px;
+    color: #667eea;
+    font-size: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.debug-option-item:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.1);
+}
+
+.debug-option-item .setting-info h3 {
+    font-size: 13px;
+    color: #555;
+    font-weight: 600;
+}
+
+.debug-option-item .setting-info p {
+    font-size: 11px;
+    color: #777;
+}
+
+/* Debug-specific switch styling */
+.debug-switch .slider {
+    background-color: #ccc;
+}
+
+.debug-switch input:checked + .slider {
+    background-color: #667eea;
+}
+
+.debug-switch input:checked + .slider::before {
+    transform: translateX(18px);
+}
+
 .setting-item {
     display: flex;
     align-items: center;
