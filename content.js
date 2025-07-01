@@ -7,15 +7,19 @@
   // Configuration - will be loaded from storage
   let CONFIG = {
     debug: false,
-    enabled: true
+    enabled: true,
+    streamingDetection: true,
+    characterDataMonitoring: true
   };
 
   // Load settings from Chrome storage
   const loadSettings = async () => {
     try {
-      const result = await chrome.storage.sync.get(['debug', 'enabled']);
+      const result = await chrome.storage.sync.get(['debug', 'enabled', 'streamingDetection', 'characterDataMonitoring']);
       CONFIG.debug = result.debug !== undefined ? result.debug : true;
       CONFIG.enabled = result.enabled !== undefined ? result.enabled : true;
+      CONFIG.streamingDetection = result.streamingDetection !== undefined ? result.streamingDetection : true;
+      CONFIG.characterDataMonitoring = result.characterDataMonitoring !== undefined ? result.characterDataMonitoring : true;
     } catch (error) {
       console.warn('[Markdown Fixer] Failed to load settings:', error);
     }
@@ -25,6 +29,29 @@
   const SKIP_ELEMENTS = "pre, code, kbd, samp, textarea, script, style";
   const PROCESSED_MARK = 'data-markdown-fixer-processed';
   const ORIGINAL_CONTENT_ATTR = 'data-original-content';
+  
+  // Platform detection
+  const PLATFORM = {
+    CHATGPT: 'chatgpt',
+    GEMINI: 'gemini',
+    UNKNOWN: 'unknown'
+  };
+  
+  const getCurrentPlatform = () => {
+    const hostname = window.location.hostname;
+    if (hostname.includes('chatgpt.com')) return PLATFORM.CHATGPT;
+    if (hostname.includes('gemini.google.com')) return PLATFORM.GEMINI;
+    return PLATFORM.UNKNOWN;
+  };
+  
+  const currentPlatform = getCurrentPlatform();
+  
+  // Platform-specific constants
+  const STREAMING_CLASS = currentPlatform === PLATFORM.CHATGPT ? 'result-streaming' : null;
+  
+  // Streaming completion tracking (ChatGPT only)
+  const streamingObservers = new WeakMap();
+  const pendingProcessNodes = new WeakSet();
 
   // Enhanced regex patterns
   const RX_BOLD = /\*\*([\s\S]+?)\*\*/g;
@@ -37,6 +64,41 @@
       .replace(RX_ITALIC, (_, p1, p2) => p1 + '<em class="em-fix-italic">' + p2 + "</em>");
   };
 
+  // Check if node is in streaming response (ChatGPT only)
+  const isInStreamingResponse = (node) => {
+    // Only applicable for ChatGPT
+    if (currentPlatform !== PLATFORM.CHATGPT || !STREAMING_CLASS) return false;
+    
+    // Handle both text nodes and element nodes
+    const elementToCheck = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+    if (!elementToCheck) return false;
+    
+    const streamingContainer = elementToCheck.closest(`.${STREAMING_CLASS}`);
+    return streamingContainer !== null;
+  };
+
+  // Observe streaming completion for a container (ChatGPT only)
+  const observeStreamingCompletion = (container) => {
+    // Only applicable for ChatGPT
+    if (currentPlatform !== PLATFORM.CHATGPT || !STREAMING_CLASS) return;
+    if (streamingObservers.has(container)) return;
+    
+    const observer = new MutationObserver(() => {
+      if (!container.classList.contains(STREAMING_CLASS)) {
+        // Streaming completed - process all pending nodes
+        processNode(container);
+        observer.disconnect();
+        streamingObservers.delete(container);
+      }
+    });
+    
+    observer.observe(container, { 
+      attributes: true, 
+      attributeFilter: ['class'] 
+    });
+    streamingObservers.set(container, observer);
+  };
+
   // Fragment-based safe text conversion
   const convertTextNodeSafely = (node) => {
     if (!CONFIG.enabled) return;
@@ -44,6 +106,20 @@
     if (!node.parentElement || 
         node.parentElement.closest(SKIP_ELEMENTS)) {
       return;
+    }
+    
+    // Check if in streaming response (ChatGPT only, only if streaming detection is enabled)
+    if (CONFIG.streamingDetection && currentPlatform === PLATFORM.CHATGPT) {
+      if (isInStreamingResponse(node)) {
+        const elementToCheck = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+        if (elementToCheck && STREAMING_CLASS) {
+          const streamingContainer = elementToCheck.closest(`.${STREAMING_CLASS}`);
+          if (streamingContainer) {
+            observeStreamingCompletion(streamingContainer);
+            return; // Skip processing until streaming completes
+          }
+        }
+      }
     }
     
     // Allow reprocessing if text contains markdown
@@ -235,16 +311,16 @@
     }
   };
 
-  // Enhanced mutation observer with Shadow DOM support and character data monitoring
+  // Enhanced mutation observer with streaming detection
   const createObserver = (targetNode) => {
     return new MutationObserver(mutations => {
       if (!CONFIG.enabled) return;
       
       mutations.forEach(mutation => {
-        // Handle character data changes (existing text node content changes)
+        // Handle character data changes - only if not streaming (when streaming detection is enabled)
         if (mutation.type === 'characterData') {
           const textNode = mutation.target;
-          if (textNode && textNode.parentElement) {
+          if (textNode && textNode.parentElement && (!CONFIG.streamingDetection || !isInStreamingResponse(textNode))) {
             // Remove processed mark from parent to allow reprocessing
             const parent = textNode.parentElement;
             if (parent.hasAttribute(PROCESSED_MARK)) {
@@ -259,12 +335,18 @@
           }
         }
         
-        // Handle added nodes (new content)
+        // Handle added nodes
         mutation.addedNodes.forEach(addedNode => {
           if (addedNode.nodeType === Node.TEXT_NODE) {
             convertTextNodeSafely(addedNode);
           } else if (addedNode.nodeType === Node.ELEMENT_NODE) {
-            processNode(addedNode);
+            // Check for streaming containers (ChatGPT only, only if streaming detection is enabled)
+            if (CONFIG.streamingDetection && currentPlatform === PLATFORM.CHATGPT && 
+                STREAMING_CLASS && addedNode.classList && addedNode.classList.contains(STREAMING_CLASS)) {
+              observeStreamingCompletion(addedNode);
+            } else {
+              processNode(addedNode);
+            }
           }
         });
       });
@@ -293,16 +375,16 @@
     mainObserver.observe(document.body || document.documentElement, {
       childList: true,
       subtree: true,
-      characterData: true
+      characterData: CONFIG.characterDataMonitoring
     });
 
-    // Shadow DOM support for Gemini
-    if (document.documentElement.shadowRoot) {
+    // Shadow DOM support for Gemini only
+    if (currentPlatform === PLATFORM.GEMINI && document.documentElement.shadowRoot) {
       shadowObserver = createObserver(document.documentElement.shadowRoot);
       shadowObserver.observe(document.documentElement.shadowRoot, {
         childList: true,
         subtree: true,
-        characterData: true
+        characterData: CONFIG.characterDataMonitoring
       });
     }
   };
