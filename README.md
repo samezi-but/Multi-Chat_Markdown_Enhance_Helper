@@ -63,7 +63,7 @@ ChatGPT と Gemini に対応したマークダウン記法（`**太字**`、`*�
 ## 開発
 
 ### 前提条件
-- Node.js（アイコン生成用）
+- Node.js 14.0.0 以上（ビルド用）
 - Python 3.x（アイコン生成用）
 
 ### セットアップ
@@ -71,6 +71,41 @@ ChatGPT と Gemini に対応したマークダウン記法（`**太字**`、`*�
 git clone https://github.com/samezi-but/Multi-Chat_Markdown_Enhance_Helper.git
 cd Multi-Chat_Markdown_Enhance_Helper
 ```
+
+### ビルドコマンド
+
+#### 配布用ビルド
+```bash
+# 基本ビルド（releaseフォルダに配布用ファイルを生成）
+npm run build
+
+# 開発用ビルド
+npm run dev
+
+# リリース用ビルド（ビルド + ZIP作成）
+npm run release
+```
+
+#### 個別コマンド
+```bash
+# releaseフォルダのクリーンアップ
+npm run clean
+
+# ファイルコピーのみ
+npm run build:copy
+
+# manifest.jsonの検証
+npm run build:validate
+
+# ZIPファイル作成（ビルド後に実行）
+npm run zip
+```
+
+#### ビルドの仕組み
+- **含まれるファイル**: `manifest.json`, `content.js`, `popup.*`, `_locales/`, `icons/`
+- **除外ファイル**: 開発用ファイル（`.git`, `README.md`, `build.js`, `LICENSE`等）
+- **自動生成**: `release-info.json`（バージョン、ビルド日時等の情報）
+- **バリデーション**: manifest.jsonの必須フィールドチェック
 
 ### アイコン生成
 ```bash
@@ -97,6 +132,15 @@ python create_icons.py
 このプロジェクトは MIT ライセンスの下で公開されています。詳細は [LICENSE](LICENSE) ファイルを参照してください。
 
 ## 更新履歴
+
+### v1.0.2
+- **ストリーミング検知機能**: ChatGPT応答完了を待ってから変換し、表の破損を防止
+- **CharacterData監視機能**: 詳細なテキスト変更監視（デバッグ用）
+- **美しいデバッグUI**: グラデーション背景と階層的デザインの実装
+- **プラットフォーム最適化**: ChatGPTとGeminiの厳格な分離処理
+- **バグ修正**: テキストノードエラー、未定義関数エラーの解決
+- **MIT ライセンス**: オープンソース化
+- **完全多言語対応**: 全UIの英語・日本語サポート
 
 ### v1.0.1
 - 多言語対応（日本語・英語）

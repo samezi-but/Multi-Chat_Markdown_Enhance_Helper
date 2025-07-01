@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-If you finish your works or you ask to user, use this command.
+If you finish your work or you ask the user, use this command.
 powershell.exe -Command '[System.Media.SystemSounds]::Hand.Play()'
 
 ## Project Overview

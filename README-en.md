@@ -60,7 +60,7 @@ A browser extension that automatically converts markdown-style emphasis (`**bold
 ## Development
 
 ### Prerequisites
-- Node.js (for icon generation)
+- Node.js 14.0.0 or higher (for build process)
 - Python 3.x (for icon generation)
 
 ### Setup
@@ -68,6 +68,41 @@ A browser extension that automatically converts markdown-style emphasis (`**bold
 git clone https://github.com/samezi-but/Multi-Chat_Markdown_Enhance_Helper.git
 cd Multi-Chat_Markdown_Enhance_Helper
 ```
+
+### Build Commands
+
+#### Distribution Build
+```bash
+# Basic build (generates distribution files in release folder)
+npm run build
+
+# Development build
+npm run dev
+
+# Release build (build + ZIP creation)
+npm run release
+```
+
+#### Individual Commands
+```bash
+# Clean release folder
+npm run clean
+
+# Copy files only
+npm run build:copy
+
+# Validate manifest.json
+npm run build:validate
+
+# Create ZIP file (run after build)
+npm run zip
+```
+
+#### Build Process
+- **Included files**: `manifest.json`, `content.js`, `popup.*`, `_locales/`, `icons/`
+- **Excluded files**: Development files (`.git`, `README.md`, `build.js`, `LICENSE`, etc.)
+- **Auto-generated**: `release-info.json` (version, build date, etc.)
+- **Validation**: manifest.json required fields check
 
 ### Icon Generation
 ```bash
@@ -94,6 +129,15 @@ python create_icons.py
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Changelog
+
+### v1.0.2
+- **Streaming Detection**: Wait for ChatGPT response completion before conversion to prevent table corruption
+- **CharacterData Monitoring**: Detailed text change monitoring for debugging purposes
+- **Beautiful Debug UI**: Gradient backgrounds and hierarchical design implementation
+- **Platform Optimization**: Strict separation between ChatGPT and Gemini processing
+- **Bug Fixes**: Resolved text node errors and undefined function errors
+- **MIT License**: Open source release
+- **Complete Internationalization**: Full English/Japanese support for all UI elements
 
 ### v1.0.1
 - Multi-language support (Japanese/English)
