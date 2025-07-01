@@ -35,6 +35,22 @@
     "message": "変換されたテキストをハイライト表示",
     "description": "デバッグトグルの説明"
   },
+  "streamingDetection": {
+    "message": "ストリーミング検知",
+    "description": "ストリーミング検知トグルのラベル"
+  },
+  "streamingDetectionDesc": {
+    "message": "ChatGPT応答完了を待ってから変換（推奨）",
+    "description": "ストリーミング検知トグルの説明"
+  },
+  "characterDataMonitoring": {
+    "message": "CharacterData監視",
+    "description": "CharacterData監視トグルのラベル"
+  },
+  "characterDataMonitoringDesc": {
+    "message": "テキスト変更の詳細監視（デバッグ用）",
+    "description": "CharacterData監視トグルの説明"
+  },
   "supportedSites": {
     "message": "対応サイト",
     "description": "対応サイトセクションの見出し"

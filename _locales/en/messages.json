@@ -35,6 +35,22 @@
     "message": "Highlight converted text with colors",
     "description": "Description for debug toggle"
   },
+  "streamingDetection": {
+    "message": "Streaming Detection",
+    "description": "Label for streaming detection toggle"
+  },
+  "streamingDetectionDesc": {
+    "message": "Wait for ChatGPT response completion before converting (recommended)",
+    "description": "Description for streaming detection toggle"
+  },
+  "characterDataMonitoring": {
+    "message": "CharacterData Monitoring",
+    "description": "Label for character data monitoring toggle"
+  },
+  "characterDataMonitoringDesc": {
+    "message": "Detailed monitoring of text changes (for debugging)",
+    "description": "Description for character data monitoring toggle"
+  },
   "supportedSites": {
     "message": "Supported Sites",
     "description": "Heading for supported sites section"
