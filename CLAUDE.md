@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-If you finish your works or you show to use message, use this command.
+If you finish your works or you ask to user, use this command.
 powershell.exe -Command '[System.Media.SystemSounds]::Hand.Play()'
 
 ## Project Overview
@@ -35,16 +35,15 @@ Multi-Chat Markdown Helper (for ChatGPT & Gemini) is a collection of browser use
 - Bold: `/\*\*([\s\S]+?)\*\*/g` (chatgpt.js) or `/\*\*(.*?)\*\*/g` (gemini.js)
 - Italic: `/(^|[^*])\*([^*\s][\s\S]*?)\*(?=[^*]|$)/g`
 
-### DOM Manipulation Strategy
-- **chatgpt.js**: Direct innerHTML replacement with regex + individual text node processing
-- **gemini.js**: DocumentFragment-based replacement to avoid innerHTML parsing issues
 
 ### Skip Patterns
 Both scripts exclude: `pre, code, kbd, samp, textarea, script, style` elements to preserve code blocks and prevent script interference.
 
 ## Testing
 
-Test manually by:
+When testing is needed, provide test files/content to the user instead of creating temporary files in the project directory.
+
+Manual testing steps:
 1. Installing in Tampermonkey/Greasemonkey
 2. Visiting ChatGPT or Gemini
 3. Typing messages with `**bold**` or `*italic*` markdown
