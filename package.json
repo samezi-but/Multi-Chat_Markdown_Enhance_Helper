@@ -1,0 +1,41 @@
+{
+  "name": "multi-chat-markdown-enhance-helper",
+  "version": "1.0.2",
+  "description": "Browser extension for automatically converting markdown-style emphasis to proper HTML tags on ChatGPT and Gemini",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js",
+    "build:clean": "node -e \"const build = require('./build.js'); build.cleanReleaseDirectory();\"",
+    "build:copy": "node -e \"const build = require('./build.js'); build.copyFiles();\"",
+    "build:validate": "node -e \"const build = require('./build.js'); build.validateManifest();\"",
+    "release": "npm run build && npm run zip",
+    "zip": "cd release && zip -r ../multi-chat-markdown-enhance-helper-v$(node -p \"require('../manifest.json').version\").zip . -x '*.DS_Store' '*/.DS_Store'",
+    "dev": "npm run build && echo 'Development build ready in ./release folder'",
+    "clean": "npm run build:clean"
+  },
+  "keywords": [
+    "chrome-extension",
+    "markdown",
+    "chatgpt",
+    "gemini",
+    "browser-extension",
+    "markdown-converter"
+  ],
+  "author": "Multi-Chat Markdown Enhance Helper Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/Multi-Chat_Markdown_Enhance_Helper.git"
+  },
+  "homepage": "https://github.com/your-username/Multi-Chat_Markdown_Enhance_Helper#readme",
+  "bugs": {
+    "url": "https://github.com/your-username/Multi-Chat_Markdown_Enhance_Helper/issues"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {},
+  "files": [
+    "release/*"
+  ]
+}

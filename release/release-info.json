@@ -1,0 +1,15 @@
+{
+  "name": "__MSG_extensionName__",
+  "version": "1.0.2",
+  "build_date": "2025-07-01T06:19:04.893Z",
+  "build_files": [
+    "manifest.json",
+    "content.js",
+    "popup.html",
+    "popup.js",
+    "popup.css",
+    "_locales",
+    "icons"
+  ],
+  "description": "__MSG_extensionDescription__"
+}
