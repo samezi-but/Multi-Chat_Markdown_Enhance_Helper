@@ -93,9 +93,41 @@ const toggleLanguage = async () => {
     }
 };
 
+// Early load debug state to prevent flash
+const earlyLoadDebugState = async () => {
+    try {
+        const result = await chrome.storage.sync.get(['debug']);
+        const debugEnabled = result.debug !== undefined ? result.debug : false;
+        
+        // Set initial state immediately
+        const debugOptionsContainer = document.getElementById('debugOptionsContainer');
+        if (debugOptionsContainer) {
+            debugOptionsContainer.classList.add('initial-load');
+            if (debugEnabled) {
+                debugOptionsContainer.classList.add('debug-enabled');
+            }
+            // Remove initial-load class after a frame to enable transitions
+            setTimeout(() => {
+                debugOptionsContainer.classList.remove('initial-load');
+            }, 100);
+        }
+    } catch (error) {
+        console.warn('Failed to early load debug state:', error);
+    }
+};
+
+// Early initialization before DOM fully loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', earlyLoadDebugState);
+} else {
+    earlyLoadDebugState();
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     const enabledToggle = document.getElementById('enabledToggle');
     const debugToggle = document.getElementById('debugToggle');
+    const streamingToggle = document.getElementById('streamingToggle');
+    const characterDataToggle = document.getElementById('characterDataToggle');
     const status = document.getElementById('status');
     const languageToggle = document.getElementById('languageToggle');
     
@@ -106,13 +138,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Setup collapsible sections
     setupCollapsibleSections();
 
+    // Show/hide debug options based on debug mode
+    const updateDebugOptionsVisibility = (animate = true) => {
+        const debugOptionsContainer = document.getElementById('debugOptionsContainer');
+        
+        if (!animate) {
+            // Immediate update without transitions
+            debugOptionsContainer.classList.add('initial-load');
+        }
+        
+        if (debugToggle.checked) {
+            debugOptionsContainer.classList.add('debug-enabled');
+        } else {
+            debugOptionsContainer.classList.remove('debug-enabled');
+        }
+        
+        if (!animate) {
+            // Re-enable transitions after immediate update
+            setTimeout(() => {
+                debugOptionsContainer.classList.remove('initial-load');
+            }, 50);
+        }
+    };
+
     // Load current settings
     const loadSettings = async () => {
         try {
-            const result = await chrome.storage.sync.get(['enabled', 'debug']);
+            const result = await chrome.storage.sync.get(['enabled', 'debug', 'streamingDetection', 'characterDataMonitoring']);
             
             enabledToggle.checked = result.enabled !== undefined ? result.enabled : true;
             debugToggle.checked = result.debug !== undefined ? result.debug : false;
+            streamingToggle.checked = result.streamingDetection !== undefined ? result.streamingDetection : true;
+            characterDataToggle.checked = result.characterDataMonitoring !== undefined ? result.characterDataMonitoring : true;
+            
+            // Update debug options visibility without animation on load
+            updateDebugOptionsVisibility(false);
             
             updateStatus(getMessage('statusLoaded', '設定を読み込みました'), 'success');
         } catch (error) {
@@ -125,7 +185,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const saveSettings = async () => {
         const settings = {
             enabled: enabledToggle.checked,
-            debug: debugToggle.checked
+            debug: debugToggle.checked,
+            streamingDetection: streamingToggle.checked,
+            characterDataMonitoring: characterDataToggle.checked
         };
 
         try {
@@ -180,7 +242,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Event listeners
     enabledToggle.addEventListener('change', saveSettings);
-    debugToggle.addEventListener('change', saveSettings);
+    debugToggle.addEventListener('change', () => {
+        updateDebugOptionsVisibility();
+        saveSettings();
+    });
+    streamingToggle.addEventListener('change', saveSettings);
+    characterDataToggle.addEventListener('change', saveSettings);
     languageToggle.addEventListener('click', toggleLanguage);
 
     // Initialize
