@@ -42,16 +42,14 @@
     if (!CONFIG.enabled) return;
     
     if (!node.parentElement || 
-        node.parentElement.closest(SKIP_ELEMENTS) ||
-        node.parentElement.hasAttribute(PROCESSED_MARK)) {
+        node.parentElement.closest(SKIP_ELEMENTS)) {
       return;
     }
-
-    const text = node.textContent;
-    if (!text.includes('*')) return;
-
+    
+    // Allow reprocessing if text contains markdown
     const parent = node.parentElement;
-    if (!parent) return;
+    const text = node.textContent;
+    if (!text.includes('*') || !parent) return;
 
     const fragment = document.createDocumentFragment();
     let lastIndex = 0;
@@ -237,12 +235,31 @@
     }
   };
 
-  // Enhanced mutation observer with Shadow DOM support
+  // Enhanced mutation observer with Shadow DOM support and character data monitoring
   const createObserver = (targetNode) => {
     return new MutationObserver(mutations => {
       if (!CONFIG.enabled) return;
       
       mutations.forEach(mutation => {
+        // Handle character data changes (existing text node content changes)
+        if (mutation.type === 'characterData') {
+          const textNode = mutation.target;
+          if (textNode && textNode.parentElement) {
+            // Remove processed mark from parent to allow reprocessing
+            const parent = textNode.parentElement;
+            if (parent.hasAttribute(PROCESSED_MARK)) {
+              parent.removeAttribute(PROCESSED_MARK);
+              // Restore original content if exists
+              const originalContent = parent.getAttribute(ORIGINAL_CONTENT_ATTR);
+              if (originalContent) {
+                parent.removeAttribute(ORIGINAL_CONTENT_ATTR);
+              }
+            }
+            convertTextNodeSafely(textNode);
+          }
+        }
+        
+        // Handle added nodes (new content)
         mutation.addedNodes.forEach(addedNode => {
           if (addedNode.nodeType === Node.TEXT_NODE) {
             convertTextNodeSafely(addedNode);
@@ -275,7 +292,8 @@
     mainObserver = createObserver(document);
     mainObserver.observe(document.body || document.documentElement, {
       childList: true,
-      subtree: true
+      subtree: true,
+      characterData: true
     });
 
     // Shadow DOM support for Gemini
@@ -283,7 +301,8 @@
       shadowObserver = createObserver(document.documentElement.shadowRoot);
       shadowObserver.observe(document.documentElement.shadowRoot, {
         childList: true,
-        subtree: true
+        subtree: true,
+        characterData: true
       });
     }
   };
